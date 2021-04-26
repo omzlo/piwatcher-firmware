@@ -25,6 +25,20 @@ typedef struct {
         // R only
         // current clock value
 
+    volatile uint8_t VERSION;
+        // R only
+        // Current firmware version
+
+    volatile uint8_t DEFAULT_WATCHDOG;
+        // R+W, backed-up in EEPROM
+        // This value will be copied into WATCHDOG at boot time.
+        // See WATCHDOG register.
+
+    volatile uint16_t DEFAULT_REBOOT;
+        // R+W, backed-up in EEPROM
+        // This value will be copied into REBOOT at boot time;
+        // See REBOOT register.
+
 } __attribute__ ((__packed__)) registers_t;
 
 extern registers_t out_regs;
@@ -37,5 +51,7 @@ extern registers_t in_regs;
 void registers_reset(void);
 
 void registers_sync(void);
+
+void registers_clear_defaults(void);
 
 #endif

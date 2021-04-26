@@ -131,14 +131,28 @@ int main()
     gpio_init();
     timer_open();
     twi_init(0x62);
+    registers_reset();
     
-    _delay_ms(250);
+    _delay_ms(200);
     sei();
+    _delay_ms(50);
 
+
+    now = timer_ticks();
+    while (button_press);
+    if (timer_ticks()-now>250)
+    {
+        registers_clear_defaults();
+        for (;;)
+        {
+            PORTB ^= (1<<BIT_LED);
+            _delay_ms(500); 
+        }
+    }
 
 
     PORTB |= (1<<BIT_LED);
-
+    
     for (;;)
     {
         now = timer_ticks();
@@ -194,6 +208,7 @@ int main()
                 if (out_regs.REBOOT!=0)
                 {
                     reboot((uint32_t)out_regs.REBOOT*50);
+                    start_timer = timer_ticks();
                 }
                 else
                 /* SHUTDOWN MODE (HALT ON LOSS OF ACTIVITY) */
